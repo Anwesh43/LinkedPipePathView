@@ -164,4 +164,26 @@ class PipePathView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : PipePathView) {
+
+        private val pp : PipePath = PipePath(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            pp.draw(canvas, paint)
+            animator.animate {
+                pp.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            pp.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
