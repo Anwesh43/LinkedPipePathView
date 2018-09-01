@@ -113,8 +113,10 @@ class PipePathView(ctx : Context) : View(ctx) {
         }
 
         fun addNeighbor() {
-            next = PPNode(i + 1)
-            next?.prev = this
+            if (i < nodes - 1) {
+                next = PPNode(i + 1)
+                next?.prev = this
+            }
         }
 
         fun draw(canvas : Canvas, paint : Paint) {
@@ -173,7 +175,7 @@ class PipePathView(ctx : Context) : View(ctx) {
         private val animator : Animator = Animator(view)
 
         fun render(canvas : Canvas, paint : Paint) {
-            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            canvas.drawColor(Color.parseColor("#263238"))
             pp.draw(canvas, paint)
             animator.animate {
                 pp.update {i, scl ->
