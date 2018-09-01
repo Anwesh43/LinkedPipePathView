@@ -13,7 +13,7 @@ import android.graphics.Color
 
 val nodes : Int = 5
 
-fun Canvas.drawPipePathView(i : Int, scale : Float, paint : Paint) {
+fun Canvas.drawPipePathNode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
     val hGap : Float = h / (nodes + 1)
@@ -98,6 +98,48 @@ class PipePathView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class PPNode(var i : Int, val state : State = State()) {
+
+        var prev : PPNode? = null
+        var next : PPNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            next = PPNode(i + 1)
+            next?.prev = this
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawPipePathNode(i, state.scale, paint)
+            prev?.draw(canvas, paint)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : PPNode {
+            var curr : PPNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
