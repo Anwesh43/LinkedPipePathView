@@ -9,8 +9,34 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
+import android.graphics.Color
 
 val nodes : Int = 5
+
+fun Canvas.drawPipePathView(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val hGap : Float = h / (nodes + 1)
+    val index : Int = i % 2
+    val sf : Float = 1f - 2  * index
+    val sc1 : Float = Math.min(0.5f, scale) * 2
+    val sc2 : Float = Math.min(0.5f, Math.max(scale - 0.5f, 0f)) * 2
+    val tw : Float = 0.9f * w
+    save()
+    translate(w/2, hGap * i + hGap / 2)
+    scale(sf, 1f)
+    save()
+    translate(-tw / 2, 0f)
+    paint.strokeWidth = Math.min(w, h) / 60
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.color = Color.parseColor("#0288D1")
+    drawLine(0f, 0f, tw * sc1, 0f, paint)
+    drawLine(tw, 0f, tw, hGap * sc2, paint)
+    paint.color = Color.WHITE
+    drawCircle(tw * sc1, hGap * sc2, hGap/20, paint)
+    restore()
+    restore()
+}
 
 class PipePathView(ctx : Context) : View(ctx) {
 
@@ -31,7 +57,7 @@ class PipePathView(ctx : Context) : View(ctx) {
 
     data class State(var scale : Float = 0f, var dir : Float = 0f, var prevScale : Float = 0f) {
         fun update(cb : (Float) -> Unit) {
-            scale += 0.1f * dir
+            scale += 0.05f * dir
             if (Math.abs(scale - prevScale) > 1) {
                 scale = prevScale + dir
                 dir = 0f
