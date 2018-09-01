@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.pipepathview
  * Created by anweshmishra on 02/09/18.
  */
 
+import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Canvas
 import android.view.View
@@ -185,6 +186,14 @@ class PipePathView(ctx : Context) : View(ctx) {
             pp.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : PipePathView {
+            val view : PipePathView = PipePathView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
