@@ -14,7 +14,7 @@ import android.graphics.Color
 
 val nodes : Int = 5
 
-fun Canvas.drawPipePathNode(i : Int, scale : Float, paint : Paint) {
+fun Canvas.drawPipePathNode(i : Int, scale : Float, currI : Int, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
     val hGap : Float = h / (nodes + 1)
@@ -33,8 +33,10 @@ fun Canvas.drawPipePathNode(i : Int, scale : Float, paint : Paint) {
     paint.color = Color.parseColor("#0288D1")
     drawLine(0f, 0f, tw * sc1, 0f, paint)
     drawLine(tw, 0f, tw, hGap * sc2, paint)
-    paint.color = Color.WHITE
-    drawCircle(tw * sc1, hGap * sc2, hGap/20, paint)
+    if (currI == i) {
+        paint.color = Color.WHITE
+        drawCircle(tw * sc1, hGap * sc2, hGap / 20, paint)
+    }
     restore()
     restore()
 }
@@ -119,9 +121,9 @@ class PipePathView(ctx : Context) : View(ctx) {
             }
         }
 
-        fun draw(canvas : Canvas, paint : Paint) {
-            canvas.drawPipePathNode(i, state.scale, paint)
-            prev?.draw(canvas, paint)
+        fun draw(canvas : Canvas, paint : Paint, currI : Int) {
+            prev?.draw(canvas, paint, currI)
+            canvas.drawPipePathNode(i, state.scale, currI, paint)
         }
 
         fun update(cb : (Int, Float) -> Unit) {
@@ -152,7 +154,7 @@ class PipePathView(ctx : Context) : View(ctx) {
         private var dir : Int = 1
 
         fun draw(canvas : Canvas, paint : Paint) {
-            curr.draw(canvas, paint)
+            curr.draw(canvas, paint, curr.i)
         }
 
         fun update(cb : (Int, Float) -> Unit) {
